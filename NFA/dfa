@@ -1,0 +1,30 @@
+// DFA
+digraph {
+	rankdir=LR
+	"p,q,r,s" [shape=doublecircle]
+	"p,r" [shape=circle]
+	"p,q,s" [shape=doublecircle]
+	"p,q" [shape=circle]
+	"p,s" [shape=doublecircle]
+	p [shape=circle]
+	"p,q,r" [shape=circle]
+	"p,r,s" [shape=doublecircle]
+	"" [shape=none]
+	"" -> p
+	p -> "p,q" [label=0]
+	p -> p [label=1]
+	"p,q" -> "p,q,r" [label=0]
+	"p,q" -> "p,r" [label=1]
+	"p,q,r" -> "p,q,r,s" [label=0]
+	"p,q,r" -> "p,r" [label=1]
+	"p,r" -> "p,q,s" [label=0]
+	"p,r" -> p [label=1]
+	"p,q,r,s" -> "p,q,r,s" [label=0]
+	"p,q,r,s" -> "p,r,s" [label=1]
+	"p,q,s" -> "p,q,r,s" [label=0]
+	"p,q,s" -> "p,r,s" [label=1]
+	"p,r,s" -> "p,q,s" [label=0]
+	"p,r,s" -> "p,s" [label=1]
+	"p,s" -> "p,q,s" [label=0]
+	"p,s" -> "p,s" [label=1]
+}
