@@ -1,0 +1,562 @@
+\documentclass[a4paper, twoside, 12pt]{article}
+\usepackage[spanish]{babel}
+\usepackage[utf8x]{inputenc}
+\usepackage{lmodern}
+\usepackage{multicol}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+\usepackage{MnSymbol}%
+\usepackage{wasysym}%
+
+\usepackage[breaklinks]{hyperref}
+\usepackage{xcolor}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=magenta,
+    filecolor=black,      
+    urlcolor=cyan,
+    citecolor=teal,
+    pdfauthor = {Joaquín Badillo},
+    linktocpage = true
+}
+
+\usepackage{geometry}
+
+% Tikz
+\usepackage{tikz}
+\usetikzlibrary{scopes}
+\tikzset{
+    vertical align/.style={
+    baseline=-.5*(height("$+$")-depth("$+$"))
+   }
+}
+
+\usetikzlibrary{trees}
+\tikzset{%
+  bag/.style={text width=50pt, text centered},
+}
+\usetikzlibrary{arrows.meta}
+\usepackage{forest}
+
+\usepackage{subcaption}
+\usepackage{float}
+
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[OL]{\color{magenta}{\textbf{\thepage}} \quad \tikz[vertical align] \draw[fill = magenta] (0,0) circle (1.25pt); \quad \color{black}{\textsc{Compiladores}}}
+\fancyhead[ER]{\color{black}{\textsc{TC3002B}} \quad \color{magenta}{\tikz[vertical align] \draw[fill = magenta] (0,0) circle (1.25pt); \quad \textbf{\thepage}}}
+\renewcommand{\headrulewidth}{1pt}
+\setlength{\headheight}{15pt}
+
+% Set document properties
+\geometry{margin=2.4cm}
+\oddsidemargin 0pt
+\evensidemargin 0pt
+\marginparsep 0pt
+\linespread{1.5}
+
+\usepackage{apacite}
+\usepackage{textgreek}
+
+\raggedright
+\usepackage[skip=6pt]{parskip}
+
+\begin{document}
+\begin{titlepage}
+\begin{center}
+		\includegraphics[width=0.75\textwidth]{Img/logo.png}
+		
+		\vspace{20pt}
+		
+		\begin{LARGE}\bf{Gramáticas}
+		\end{LARGE}
+		
+		\vspace{50pt}
+
+		TC3002B - Grupo 501
+		
+		\vspace{80pt}
+        
+        \textbf{Joaquín Badillo Granillo}
+        
+        Tecnológico de Monterrey
+        
+        Campus Santa Fe
+        
+        \href{mailto:a01026364@tec.mx}{a01026364@tec.mx}            
+		
+        \vspace{120pt}     
+    				
+		21 de Abril de 2025
+	\end{center}
+\end{titlepage}
+\pagebreak
+\section*{Grámaticas}
+
+\begin{enumerate}
+    \item \begin{enumerate}
+        \item Escriba una grámatica no ambigua que genere el conjunto de cadenas
+
+        \texttt{[s;, s;s;, s;s;s;, ...]}.
+
+            \begin{align*}
+                E &\rightarrow X; \\
+                X &\rightarrow s \, | \, X; s
+            \end{align*}
+        
+        \item Dé una derivación por la izquierda y por la derecha para la cadena \texttt{s;s;} utilizando su gramática.
+
+        \begin{itemize}
+            \item Derivación por la izquierda
+
+            $$ 
+                E \rightarrow X; \rightarrow {\color{magenta}{X;s}}; \rightarrow {\color{magenta}{s}};s;
+            $$
+
+            \item Derivación por la derecha
+
+            $$ 
+                E \rightarrow X; \rightarrow {\color{magenta}{X;s}}; \rightarrow {\color{magenta}{s}};s;
+            $$
+        \end{itemize}
+    \end{enumerate}
+
+    \item Dada la gramática $A\rightarrow AA | (A)|\varepsilon$
+    
+    \begin{enumerate}
+        \item Describa el lenguaje que genera.
+        
+        Genera pares de paréntesis balanceados:
+        \begin{itemize}
+            \item \texttt{()}
+            \item \texttt{()()}
+            \item \texttt{()()...}
+            \item \texttt{(())}
+            \item \texttt{((...))}
+            \item \texttt{(...)...}
+        \end{itemize}
+        
+        \item Muestre que es ambiguo.
+
+        Es trivialmente ambigua con la cadena vacía:
+
+        \begin{align*}
+            A & \rightarrow \varepsilon \ \blacksquare\\
+            A & \rightarrow AA \rightarrow \varepsilon A \rightarrow \varepsilon \ \blacksquare \\
+            A & \rightarrow AA\rightarrow A\varepsilon \rightarrow \varepsilon \ \blacksquare
+        \end{align*}
+
+        Además, de forma similar, es posible generar derivaciones distintas para otras cadenas como \texttt{()}
+
+        \begin{align*}
+            A & \rightarrow (A) \rightarrow () \  \blacksquare\\
+            A & \rightarrow AA \rightarrow \varepsilon A \rightarrow \varepsilon(A) \rightarrow () \ \blacksquare \\
+        \end{align*}
+
+        
+        \begin{figure}[H]
+        \centering
+        
+        % Subfigura 1: vía producción (A)
+        \begin{subfigure}{0.8\linewidth}
+        \centering
+        \begin{tikzpicture}[level distance=1.5cm, sibling distance=1.5cm]
+          \node {A}
+            child { node {(} }
+            child { node {A}
+              child { node {$\varepsilon$} }
+            }
+            child { node {)} };
+        \end{tikzpicture}
+        \caption{Derivación con producción $(A)$}
+        \end{subfigure}
+        \hspace{1cm}
+        
+        % Subfigura 2: vía producción AA (ajustada)
+        \begin{subfigure}{0.8\linewidth}
+        \centering
+        
+        \begin{tikzpicture}[level distance=1.6cm,
+        every tree node/.style={align=center, anchor=north},
+        level 1/.style={sibling distance=3cm},
+        level 2/.style={sibling distance=2cm}]
+          \node {A}
+            child { node {A}
+              child[bag] { node {$\varepsilon$} }
+            }
+            child { node {A}
+              child { node {(} }
+              child { node {A}
+                child { node {$\varepsilon$} }
+              }
+              child { node {)} }
+            };
+        \end{tikzpicture}
+        \caption{Derivación con producción $AA$}
+        \end{subfigure}
+        
+        \caption{Árboles de derivación para la cadena \texttt{()}}
+        \end{figure}
+    \end{enumerate}
+
+    \item Dada la gramática
+
+    \begin{align*}
+        &\mathrm{exp} \rightarrow \mathrm{exp} \ \mathrm{opsuma} \ \mathrm{term} \ | \ \mathrm{term} \\
+        &\mathrm{opsuma} \rightarrow + \ | \ - \\
+        &\mathrm{term} \rightarrow \mathrm{term} \ \mathrm{opmult} \ \mathrm{factor} \ | \ \mathrm{factor} \\
+        &\mathrm{opmult} \rightarrow * \\
+        &\mathrm{factor} \rightarrow (\mathrm{exp}) \ | \ \mathrm{n\acute{u}mero}
+    \end{align*}
+
+    escriba derivaciones por la izquierda, árboles de análisis gramatical y ASTs para las siguientes expresiones:
+
+    \begin{enumerate}
+        \item 3+4*5-6
+
+        
+        \begin{align*}
+        \mathrm{exp}
+          &\;\rightarrow\;\mathrm{exp}\;\mathrm{opsuma}\;\mathrm{term}\\
+          &\;\rightarrow\;\mathrm{exp}\;\mathrm{opsuma}\;\mathrm{term}\;\mathrm{opsuma}\;\mathrm{term}\\
+          &\;\rightarrow\;\mathrm{term}\;\mathrm{opsuma}\;\mathrm{term}\;\mathrm{opsuma}\;\mathrm{term}\\
+          &\;\rightarrow\;\mathrm{factor}\;\mathrm{opsuma}\;\mathrm{term}\;\mathrm{opsuma}\;\mathrm{term}\\
+          &\;\rightarrow\;\mathrm{3}\;\mathrm{opsuma}\;\mathrm{term}\;\mathrm{opsuma}\;\mathrm{term}\\
+          &\;\rightarrow\;\mathrm{3}\;+\;\mathrm{term}\;\mathrm{opsuma}\;\mathrm{term}\\
+          &\;\rightarrow\;\mathrm{3}\;+\;\mathrm{term}\;\mathrm{opmult}\;\mathrm{factor}\;\mathrm{opsuma}\;\mathrm{term}\\
+          &\;\rightarrow\;\mathrm{3}\;+\;\mathrm{factor}\;\mathrm{opmult}\;\mathrm{factor}\;\mathrm{opsuma}\;\mathrm{term}\\
+          &\;\rightarrow\;\mathrm{3}\;+\;\mathrm{4}\;\mathrm{opmult}\;\mathrm{factor}\;\mathrm{opsuma}\;\mathrm{term}\\
+          &\;\rightarrow\;\mathrm{3}\;+\;\mathrm{4}\;\mathrm{*}\;\mathrm{factor}\;\mathrm{opsuma}\;\mathrm{term}\\
+          &\;\rightarrow\;\mathrm{3}\;+\;\mathrm{4}\;\mathrm{*}\;\mathrm{5}\;\mathrm{opsuma}\;\mathrm{term}\\
+          &\;\rightarrow\;\mathrm{3}\;+\;\mathrm{4}\;\mathrm{*}\;\mathrm{5}\;\mathrm{-}\;\mathrm{term}\\
+          &\;\rightarrow\;\mathrm{3}\;+\;\mathrm{4}\;\mathrm{*}\;\mathrm{5}\;\mathrm{-}\;\mathrm{factor}\\
+          &\;\rightarrow\;\mathrm{3}\;+\;\mathrm{4}\;\mathrm{*}\;\mathrm{5}\;\mathrm{-}\;\mathrm{6}
+        \end{align*}
+
+        \clearpage
+
+        \begin{figure}[H]
+        \centering
+        \caption{Árbol de análisis gramatical}
+        \begin{forest}
+         for tree={circle, draw, l sep=1em}
+         [exp
+           [exp
+             [exp[term[factor [3]]]]
+             [opsuma [+]]
+             [term
+               [term
+                 [factor [4]]
+               ]
+               [opmult [*]]
+               [factor [5]]
+             ]
+           ]
+           [opsuma [-]]
+           [term
+             [factor [6]]
+           ]
+         ]
+        \end{forest}
+        \end{figure}
+
+        \begin{figure}[H]
+        \centering
+        \caption{AST}
+        \begin{forest}
+         for tree={l=1.5em}
+         [\texttt{-}
+           [\texttt{+}
+             [3]
+             [\texttt{*}
+               [4]
+               [5]
+             ]
+           ]
+           [6]
+         ]
+        \end{forest}
+        \end{figure}
+        
+        \clearpage
+
+
+        \item 3*(4-5+6)
+
+        \begin{align*}
+        \mathrm{exp}
+          &\;\rightarrow\;\mathrm{term}\\
+          &\;\rightarrow\;\mathrm{term}\;\mathrm{opmult}\;\mathrm{factor}\\
+          &\;\rightarrow\;\mathrm{factor}\;\mathrm{opmult}\;\mathrm{factor}\\
+          &\;\rightarrow\;3\;\mathrm{opmult}\;\mathrm{factor}\\
+          &\;\rightarrow\;3 * \mathrm{factor}\\
+          &\;\rightarrow\;3 * (\mathrm{exp})\\
+          &\;\rightarrow\;3 * (\mathrm{exp}\;\mathrm{opsuma}\;\mathrm{term})\\
+          &\;\rightarrow\;3 * (\mathrm{exp}\;\mathrm{opsuma}\;\mathrm{term}\;\mathrm{opsuma}\;\mathrm{term})\\
+          &\;\rightarrow\;3 * (\mathrm{term}\;\mathrm{opsuma}\;\mathrm{term}\;\mathrm{opsuma}\;\mathrm{term})\\
+          &\;\rightarrow\;3 * (\mathrm{factor}\;\mathrm{opsuma}\;\mathrm{term}\;\mathrm{opsuma}\;\mathrm{term})\\
+          &\;\rightarrow\;3 * (\mathrm{4}\;\mathrm{opsuma}\;\mathrm{term}\;\mathrm{opsuma}\;\mathrm{term})\\
+          &\;\rightarrow\;3 * (\mathrm{4}\;\mathrm{-}\;\mathrm{term}\;\mathrm{opsuma}\;\mathrm{term})\\
+          &\;\rightarrow\;3 * (\mathrm{4}\;\mathrm{-}\;\mathrm{factor}\;\mathrm{opsuma}\;\mathrm{term})\\
+          &\;\rightarrow\;3 * (\mathrm{4}\;\mathrm{-}\;\mathrm{5}\;\mathrm{opsuma}\;\mathrm{term})\\
+          &\;\rightarrow\;3 * (\mathrm{4}\;\mathrm{-}\;\mathrm{5}\;\mathrm{+}\;\mathrm{term})\\
+          &\;\rightarrow\;3 * (\mathrm{4}\;\mathrm{-}\;\mathrm{5}\;\mathrm{+}\;\mathrm{factor})\\
+          &\;\rightarrow\;3 * (\mathrm{4}\;\mathrm{-}\;\mathrm{5}\;\mathrm{+}\;\mathrm{6})\\
+        \end{align*}
+
+        \clearpage
+        
+        \begin{figure}[H]
+        \centering
+        \caption{Árbol de análisis gramatical}
+        \begin{forest}
+         for tree={circle, draw, l sep=1em}
+         [exp
+           [term
+             [term [factor [3]]]
+             [opmult [*]]
+             [factor
+                 [(]
+                 [exp
+                   [exp
+                     [exp
+                       [term [factor [4]]]
+                     ]
+                     [opsuma [-]]
+                     [term [factor [5]]]
+                   ]
+                   [opsuma [+]]
+                   [term [factor [6]]]
+                 ]
+                 [)]
+            ]
+         ]
+        ]
+        \end{forest}
+        \end{figure}
+
+        \begin{figure}[H]
+        \centering
+        \caption{AST}
+        \begin{forest}
+         for tree={l=1.5em}
+         [\texttt{*}
+           [3]
+           [\texttt{+}
+             [\texttt{-}
+               [4]
+               [5]
+             ]
+             [6]
+           ]
+         ]
+        \end{forest}
+        \end{figure}
+
+        \clearpage
+
+        \item 3-(4+5*6)
+        
+        \begin{align*}
+        \mathrm{exp}
+          &\;\rightarrow\;\mathrm{exp}\;\mathrm{opsuma}\;\mathrm{term}\\
+          &\;\rightarrow\;\mathrm{term}\;\mathrm{opsuma}\;\mathrm{term}\\
+          &\;\rightarrow\;\mathrm{factor}\;\mathrm{opsuma}\;\mathrm{term}\\
+          &\;\rightarrow\;3\;\mathrm{opsuma}\;\mathrm{term}\\
+          &\;\rightarrow\;3 - \mathrm{term}\\
+          &\;\rightarrow\;3 - \mathrm{factor}\\
+          &\;\rightarrow\;3 - (\mathrm{exp})\\
+          &\;\rightarrow\;3 - (\mathrm{exp}\;\mathrm{opsuma}\;\mathrm{term})\\
+          &\;\rightarrow\;3 - (\mathrm{term}\;\mathrm{opsuma}\;\mathrm{term})\\
+          &\;\rightarrow\;3 - (\mathrm{factor}\;\mathrm{opsuma}\;\mathrm{term})\\
+          &\;\rightarrow\;3 - (4\;\mathrm{opsuma}\;\mathrm{term})\\
+          &\;\rightarrow\;3 - (4 + \mathrm{term})\\
+          &\;\rightarrow\;3 - (4 + \mathrm{term}\;\mathrm{opmult}\;\mathrm{factor})\\
+          &\;\rightarrow\;3 - (4 + \mathrm{factor}\;\mathrm{opmult}\;\mathrm{factor})\\
+          &\;\rightarrow\;3 - (4 + \mathrm{5}\;\mathrm{opmult}\;\mathrm{factor})\\
+          &\;\rightarrow\;3 - (4 + 5 * \mathrm{factor})\\
+          &\;\rightarrow\;3 - (4 + 5 * 6)
+        \end{align*}
+
+        \clearpage
+        
+        \begin{figure}[H]
+        \centering
+        \caption{Árbol de análisis gramatical}
+        \begin{forest}
+         for tree={circle, draw, l sep=1em}
+         [exp
+           [exp
+             [term [factor [3]]]
+           ]
+           [opsuma [-]]
+           [term
+             [factor
+               [(]
+                 [exp
+                   [exp
+                     [term [factor [4]]]
+                   ]
+                   [opsuma [+]]
+                   [term
+                     [term [factor [5]]]
+                     [opmult [*]]
+                     [factor [6]]
+                   ]
+                 ]
+                [)]
+               ]
+             ]
+           ]
+         ]
+        \end{forest}
+        \end{figure}
+        
+        \begin{figure}[H]
+        \centering
+        \caption{AST}
+            \begin{forest}
+             for tree={l=1.5em}
+             [\texttt{-}
+               [3]
+               [\texttt{+}
+                 [4]
+                 [\texttt{*}
+                   [5]
+                   [6]
+                 ]
+               ]
+             ]
+            \end{forest}
+        \end{figure}
+    \end{enumerate}
+
+    \item La grámatica siguiente genera todas las expresiones regulares sobre el alfabeto de letras (utilizamos las comillas para encerrar operadores, puesto que la barra vertical también es un operador además de un metasímbolo):
+
+    \begin{align*}
+        \mathrm{rexp} \rightarrow & \ \mathrm{rexp} \ ``|" \mathrm{rexp}\\
+                         &|\ \mathrm{rexp} \ \mathrm{rexp} \\
+                         &|\ \mathrm{rexp} \ \text{``$*$''} \\
+                         &|\ ``(" \ \mathrm{rexp} \ ``)" \\
+                         &|\ \mathrm{letra}
+    \end{align*}
+
+    \begin{enumerate}
+        \item Proporcione una derivación para la expresión regular \texttt{(ab|b)*} utilizando esta gramática.
+
+        \begin{align*}
+        \mathrm{rexp}
+          &\;\rightarrow\;\mathrm{rexp}\;\text{``$*$''}\\
+          &\;\rightarrow\;``(" \; \mathrm{rexp} \; ``)"\;\text{``$*$''}\\
+          &\;\rightarrow\;``(" \; \mathrm{rexp} \; ``|" \mathrm{rexp} \; ``)"\;\text{``$*$''}\\
+          &\;\rightarrow\;``(" \; \mathrm{rexp} \; \mathrm{rexp} \; ``|" \mathrm{rexp} \; ``)"\ \text{``$*$''}\\
+          &\;\rightarrow\;``(" \; a \; \mathrm{rexp} \; ``|" \mathrm{rexp} \; ``)"\ \text{``$*$''}\\
+          &\;\rightarrow\;``(" \; a \; {b} \; ``|" \mathrm{rexp} \; ``)"\ \text{``$*$''}\\
+          &\;\rightarrow\;``(" \; a \; {b} \; ``|" {b} \; ``)"\ \text{``$*$''}
+        \end{align*}
+
+        \item Muestre que esta gramática es ambigua.
+
+        No hay reglas de precedencia para ``*'', la yuxtaposición o ``$\vert$'' por lo tanto es posible generar árboles distintos para una misma expresión que contenga dos operadores, como \texttt{a*b|c}
+
+        \begin{multicols}{2}
+        \begin{figure}[H]
+        \centering
+        \begin{forest}
+            for tree={l=1.5em}
+             [rexp
+                [rexp[rexp[a]][*]]
+                [rexp[rexp[b]][$|$][rexp[c]]]
+             ]
+        \end{forest}
+        \end{figure}
+        \columnbreak
+            \begin{align*}
+            \mathrm{rexp} &\rightarrow \mathrm{rexp} \; \mathrm{rexp} \\
+                &\rightarrow \mathrm{rexp} \; ``\mathrm{*}" \; \mathrm{rexp} \\
+                &\rightarrow \mathrm{rexp} \; ``\mathrm{*}" \; \mathrm{rexp} \; ``|" \; \mathrm{rexp}\\
+                &\overset{*}{\rightarrow} a \; ``\mathrm{*}" b \; ``|" \; c
+        \end{align*}
+        \end{multicols}
+        
+        \begin{multicols}{2}
+        \begin{figure}[H]
+        \centering
+        \begin{forest}
+            for tree={l=1.5em}
+             [rexp
+                [rexp[rexp[rexp[a]][*]][rexp[b]]]
+                [$|$]
+                [rexp[c]]
+             ]
+        \end{forest}
+        \end{figure}
+
+        \columnbreak
+
+        \begin{align*}
+            \mathrm{rexp} &\rightarrow \mathrm{rexp} \; ``|" \; \mathrm{rexp} \\
+                &\rightarrow \mathrm{rexp} \; \mathrm{rexp} \; ``|" \; \mathrm{rexp} \\
+                &\rightarrow \mathrm{rexp} \; ``\mathrm{*}" \; \mathrm{rexp} \; ``|" \; \mathrm{rexp}\\
+                &\overset{*}{\rightarrow} a \; ``\mathrm{*}" b \; ``|" \; c
+        \end{align*}
+        \end{multicols}
+        
+
+        
+        \item Vuelva a escribir esta gramática para establecer las precedencias correctas para los operadores.
+
+        Considerando la siguiente lista de precedencia, donde una operación más arriba en la lista tiene mayor precedencia:
+
+        \begin{enumerate}
+            \item Estrella de Kleene
+            \item Yuxtaposición
+            \item Unión
+        \end{enumerate}
+
+        Se puede desambiguar la gramática de la siguiente manera:
+
+        \begin{align*}
+            \mathrm{re} &\rightarrow \mathrm{re} \; ``|"  \; \mathrm{term} \; | \; \mathrm{term} \\
+            \mathrm{term} &\rightarrow \mathrm{term} \; \mathrm{rep} \; | \; \mathrm{rep}\\
+            \mathrm{rep} &\rightarrow \mathrm{base} \; ``\mathrm{*}" \; | \; \mathrm{base}\\
+            \mathrm{base} &\rightarrow ``(" \; \mathrm{re} \; ``)" \; | \; \mathrm{letra}
+        \end{align*}
+
+        \item ¿Qué asociatividad da su respuesta en el inciso anterior para los operadores binarios? Explique su respuesta.
+
+        Las operaciones binarias son la yuxtaposición y la unión; bajo esta gramática ambas son asociativas a la izquierda, dado que el no-terminal \texttt{re} o \texttt{term} se ubica a la izquierda en sus respectivas producciones: $\mathrm{re} \rightarrow \mathrm{re} \; ``|"  \; \mathrm{term}$ para la unión y $\mathrm{term} \rightarrow \mathrm{term} \; \mathrm{rep}$ para la yuxtaposición.
+        
+        Por lo tanto, las expresiones a la izquierda tienen mayor profundidad en el AST (los términos a la derecha deben reemplazarse por terminales u operaciones de mayor precedencia) y consecuentemente se evalúan primero. Por ejemplo $a|b|c$ se deriva como
+
+        \begin{multicols}{2}
+            
+        \begin{align*}
+            \mathrm{re} &\rightarrow \mathrm{re} \; ``|"  \; \mathrm{term} \\
+                        &\rightarrow \mathrm{re} \; ``|"  \; \mathrm{term} \; ``|"  \; \mathrm{term} \\
+                        &\rightarrow \mathrm{term} \; ``|"  \; \mathrm{term} \; ``|"  \; \mathrm{term} \\
+                        &\overset{*}{\rightarrow} a ``|" b ``|" c
+        \end{align*}
+
+        \columnbreak
+        
+        \begin{figure}[H]
+            \centering
+            \begin{forest}
+            for tree={l=1.5em}
+            [$|$
+                [$|$[a][b]]
+                [c]
+            ]
+            \end{forest}
+        \end{figure}
+        \end{multicols}
+            
+    \end{enumerate}
+\end{enumerate}
+\end{document}
