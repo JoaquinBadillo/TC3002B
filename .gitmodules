@@ -1,0 +1,3 @@
+[submodule "Compilers/05_Project"]
+	path = Compilers/05_Project
+	url = git@github.com:JoaquinBadillo/CMinus-Python.git
